@@ -3,6 +3,7 @@ from utils import *
 import random
 
 SPARQLPATH = "http://10.3.216.75:25815/sparql"  # depend on your own internal address and port, shown in Freebase folder's readme.md
+# SPARQLPATH= "http://localhost:8000/sparql"
 
 # pre-defined sparqls
 sparql_head_relations = """\nPREFIX ns: <http://rdf.freebase.com/ns/>\nSELECT ?relation\nWHERE {\n  ns:%s ?relation ?x .\n}"""

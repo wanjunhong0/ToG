@@ -15,7 +15,7 @@ if __name__ == '__main__':
     parser.add_argument("--max_length", type=int,
                         default=256, help="the max length of LLMs output.")
     parser.add_argument("--temperature_exploration", type=float,
-                        default=0.4, help="the temperature in exploration stage.")
+                        default=0., help="the temperature in exploration stage.")
     parser.add_argument("--temperature_reasoning", type=float,
                         default=0, help="the temperature in reasoning stage.")
     parser.add_argument("--width", type=int,

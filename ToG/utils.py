@@ -106,7 +106,8 @@ def clean_relations_bm25_sent(topn_relations, topn_scores, entity_id, head_relat
 def run_llm(prompt, temperature, max_tokens, opeani_api_keys, engine="gpt-3.5-turbo"):
     if "llama" in engine.lower():
         openai_api_key = "EMPTY"
-        openai_api_base = "http://10.3.216.75:60579/v1"  # your local llama server port
+        openai_api_base = "http://10.3.216.75:20686/v1"  # your local llama server port
+        # openai.api_base = "http://localhost:8000/v1"
         client = OpenAI(api_key=openai_api_key, base_url=openai_api_base)
         engine = client.models.list().data[0].id
     else:
