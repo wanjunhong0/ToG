@@ -1,7 +1,8 @@
 from SPARQLWrapper import SPARQLWrapper, JSON
 from utils import *
+import random
 
-SPARQLPATH = "http://192.168.80.12:8890/sparql"  # depend on your own internal address and port, shown in Freebase folder's readme.md
+SPARQLPATH = "http://localhost:8890/sparql"  # depend on your own internal address and port, shown in Freebase folder's readme.md
 
 # pre-defined sparqls
 sparql_head_relations = """\nPREFIX ns: <http://rdf.freebase.com/ns/>\nSELECT ?relation\nWHERE {\n  ns:%s ?relation ?x .\n}"""
@@ -61,7 +62,13 @@ def clean_relations(string, entity_id, head_relations):
     pattern = r"{\s*(?P<relation>[^()]+)\s+\(Score:\s+(?P<score>[0-9.]+)\)}"
     relations=[]
     for match in re.finditer(pattern, string):
-        relation = match.group("relation").strip()
+        relation = match.group("relation").strip().replace(' ', '')
+        ### !!! there could be more than one answer provided, could be better fixed
+        ### answer: {a} or {b} or {c}
+        ### find wrong relation name: a) or {b} or {c
+        ### only take first answer relation: a
+        if '}' in relation:
+            relation = relation[:relation.find('}')]
         if ';' in relation:
             continue
         score = match.group("score")
@@ -127,6 +134,9 @@ def relation_search_prune(entity_id, entity_name, pre_relations, pre_head, quest
     head_relations = list(set(head_relations))
     tail_relations = list(set(tail_relations))
     total_relations = head_relations+tail_relations
+    ### !!! max tokens# reached (too many relations), could be better fixed
+    if len(total_relations) > 200:
+        total_relations = random.sample(total_relations, 200)
     total_relations.sort()  # make sure the order in prompt is always equal
     
     if args.prune_tools == "llm":
@@ -165,6 +175,8 @@ def entity_search(entity, relation, head=True):
 
 def entity_score(question, entity_candidates_id, score, relation, args):
     entity_candidates = [id2entity_name_or_type(entity_id) for entity_id in entity_candidates_id]
+    ### !!! max tokens# reached (entity names too long), could be better fixed
+    entity_candidates = [entity for entity in entity_candidates if len(entity) < 500]
     if all_unknown_entity(entity_candidates):
         return [1/len(entity_candidates) * score] * len(entity_candidates), entity_candidates, entity_candidates_id
     entity_candidates = del_unknown_entity(entity_candidates)
