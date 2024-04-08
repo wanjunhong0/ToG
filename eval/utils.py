@@ -104,6 +104,8 @@ def check_string(string):
     return "{" in string
 
 def clean_results(string):
+    if string.lower().startswith('{yes}'):
+        string = string[5:]
     if "{" in string:
         start = string.find("{") + 1
         end = string.find("}")
@@ -126,10 +128,9 @@ def exact_match(response, answers):
             return True
     return False
 
-def save_result2json(dataset_name, num_right, num_error, total_nums, method):
+def save_result2json(dataset_name, num_right, num_error, total_nums):
     results_data = {
         'dataset': dataset_name,
-        'method': method,
         'Exact Match': float(num_right/total_nums),
         'Right Samples': num_right,
         'Error Sampels': num_error
