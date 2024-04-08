@@ -6,6 +6,8 @@ import random
 from client import *
 
 
+random.seed(123)
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", type=str,
@@ -23,7 +25,7 @@ if __name__ == '__main__':
     parser.add_argument("--remove_unnecessary_rel", type=bool,
                         default=True, help="whether removing unnecessary relations.")
     parser.add_argument("--LLM_type", type=str,
-                        default="gpt-3.5-turbo", help="base LLM model.")
+                        default="llama", help="base LLM model.")
     parser.add_argument("--opeani_api_keys", type=str,
                         default="", help="if the LLM_type is gpt-3.5-turbo or gpt-4, you need add your own openai api keys.")
     parser.add_argument("--num_retain_entity", type=int,
