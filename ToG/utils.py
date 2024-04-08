@@ -1,7 +1,7 @@
 from prompt_list import *
 import json
 import time
-import openai
+from openai import OpenAI
 import re
 from prompt_list import *
 from rank_bm25 import BM25Okapi
@@ -105,26 +105,28 @@ def clean_relations_bm25_sent(topn_relations, topn_scores, entity_id, head_relat
 
 def run_llm(prompt, temperature, max_tokens, opeani_api_keys, engine="gpt-3.5-turbo"):
     if "llama" in engine.lower():
-        openai.api_key = "EMPTY"
-        openai.api_base = "http://localhost:8000/v1"  # your local llama server port
-        engine = openai.Model.list()["data"][0]["id"]
+        openai_api_key = "EMPTY"
+        openai_api_base = "http://10.3.216.75:60579/v1"  # your local llama server port
+        client = OpenAI(api_key=openai_api_key, base_url=openai_api_base)
+        engine = client.models.list().data[0].id
     else:
-        openai.api_key = opeani_api_keys
-
+        openai_api_key = opeani_api_keys
+        client = OpenAI(api_key=openai_api_key, base_url=openai_api_base)
+        
     messages = [{"role":"system","content":"You are an AI assistant that helps people find information."}]
     message_prompt = {"role":"user","content":prompt}
     messages.append(message_prompt)
     f = 0
     while(f == 0):
         try:
-            response = openai.ChatCompletion.create(
+            response = client.chat.completions.create(
                     model=engine,
                     messages = messages,
                     temperature=temperature,
                     max_tokens=max_tokens,
                     frequency_penalty=0,
                     presence_penalty=0)
-            result = response["choices"][0]['message']['content']
+            result = response.choices[0].message.content
             f = 1
         except:
             print("openai error, retry")
