@@ -151,10 +151,10 @@ def relation_search_prune(entity_id, entity_name, pre_relations, pre_head, quest
     
 def entity_search(entity, relation, head=True):
     if head:
-        tail_entities_extract = sparql_tail_entities_extract% (entity, relation)
+        tail_entities_extract = sparql_tail_entities_extract % (entity, relation)
         entities = execurte_sparql(tail_entities_extract)
     else:
-        head_entities_extract = sparql_head_entities_extract% (entity, relation)
+        head_entities_extract = sparql_head_entities_extract % (relation, entity)
         entities = execurte_sparql(head_entities_extract)
 
 
