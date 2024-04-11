@@ -103,7 +103,7 @@ def clean_relations_bm25_sent(topn_relations, topn_scores, entity_id, head_relat
     return True, relations
 
 
-def run_llm(prompt, temperature, max_tokens, opeani_api_keys, engine="gpt-3.5-turbo"):
+def run_llm(prompt, temperature, max_tokens, openai_api_keys, engine="gpt-3.5-turbo"):
     if "llama" in engine.lower():
         openai_api_key = "EMPTY"
         openai_api_base = "http://10.3.216.75:20686/v1"  # your local llama server port
@@ -111,8 +111,7 @@ def run_llm(prompt, temperature, max_tokens, opeani_api_keys, engine="gpt-3.5-tu
         client = OpenAI(api_key=openai_api_key, base_url=openai_api_base)
         engine = client.models.list().data[0].id
     else:
-        openai_api_key = opeani_api_keys
-        client = OpenAI(api_key=openai_api_key, base_url=openai_api_base)
+        client = OpenAI(api_key=openai_api_keys)
         
     messages = [{"role":"system","content":"You are an AI assistant that helps people find information."}]
     message_prompt = {"role":"user","content":prompt}
@@ -149,7 +148,9 @@ def del_unknown_entity(entity_candidates):
 def clean_scores(string, entity_candidates):
     scores = re.findall(r'\d+\.\d+', string)
     scores = [float(number) for number in scores]
-    if len(scores) == len(entity_candidates):
+    ### !!! llm could return all 0 values, which prunes all the entites
+    # if len(scores) == len(entity_candidates):
+    if len(scores) == len(entity_candidates) and min(scores) > 0:
         return scores
     else:
         print("All entities are created equal.")
@@ -157,7 +158,7 @@ def clean_scores(string, entity_candidates):
     
 
 def save_2_jsonl(question, answer, cluster_chain_of_entities, file_name):
-    dict = {"question":question, "results": answer, "reasoning_chains": cluster_chain_of_entities}
+    dict = {"question":question, "result": answer, "reasoning_chains": cluster_chain_of_entities}
     with open("ToG_{}.jsonl".format(file_name), "a") as outfile:
         json_str = json.dumps(dict)
         outfile.write(json_str + "\n")
@@ -180,7 +181,7 @@ def if_true(prompt):
 
 def generate_without_explored_paths(question, args):
     prompt = cot_prompt + "\n\nQ: " + question + "\nA:"
-    response = run_llm(prompt, args.temperature_reasoning, args.max_length, args.opeani_api_keys, args.LLM_type)
+    response = run_llm(prompt, args.temperature_reasoning, args.max_length, args.openai_api_keys, args.LLM_type)
     return response
 
 

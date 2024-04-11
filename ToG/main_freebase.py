@@ -26,7 +26,7 @@ if __name__ == '__main__':
                         default=True, help="whether removing unnecessary relations.")
     parser.add_argument("--LLM_type", type=str,
                         default="llama", help="base LLM model.")
-    parser.add_argument("--opeani_api_keys", type=str,
+    parser.add_argument("--openai_api_keys", type=str,
                         default="", help="if the LLM_type is gpt-3.5-turbo or gpt-4, you need add your own openai api keys.")
     parser.add_argument("--num_retain_entity", type=int,
                         default=5, help="Number of entities retained during entities search.")
@@ -35,6 +35,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     datas, question_string = prepare_dataset(args.dataset)
+
+    datas = datas[6:]
     print("Start Running ToG on %s dataset." % args.dataset)
     for data in tqdm(datas):
         question = data[question_string]

@@ -4,9 +4,9 @@ from utils import *
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", type=str,
-                        default="cwq", help="choose the dataset.")
+                        default="webqsp", help="choose the dataset.")
     parser.add_argument("--output_file", type=str,
-                        default="ToG_cwq.json", help="the output file name.")
+                        default="ToG_webqsp.json", help="the output file name.")
     parser.add_argument("--constraints_refuse", type=bool,
                         default=True, help="LLM may have refuse erorr, enable this option to skip current sample.")
     args = parser.parse_args()
@@ -17,7 +17,7 @@ if __name__ == '__main__':
     num_error = 0
     for data in output_datas:
         answers = align(args.dataset, question_string, data, ground_truth_datas)
-        results = data['results']
+        results = data['result']
         if check_string(results):
             response = clean_results(results)
             if response=="NULL":
@@ -39,5 +39,5 @@ if __name__ == '__main__':
     print("Exact Match: {}".format(float(num_right/len(output_datas))))
     print("right: {}, error: {}".format(num_right, num_error))
 
-    save_result2json(args.dataset, num_right, num_error, len(output_datas))
+    # save_result2json(args.dataset, num_right, num_error, len(output_datas))
     
