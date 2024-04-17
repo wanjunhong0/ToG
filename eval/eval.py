@@ -4,11 +4,11 @@ from utils import *
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", type=str,
-                        default="webqsp", help="choose the dataset.")
+                        default="cwq", help="choose the dataset.")
     parser.add_argument("--output_file", type=str,
-                        default="ToG_webqsp.json", help="the output file name.")
+                        default="./results/llama_cwq.jsonl ", help="the output file name.")
     parser.add_argument("--constraints_refuse", type=bool,
-                        default=True, help="LLM may have refuse erorr, enable this option to skip current sample.")
+                        default=False, help="LLM may have refuse erorr, enable this option to skip current sample.")
     args = parser.parse_args()
 
     ground_truth_datas, question_string, output_datas = prepare_dataset_for_eval(args.dataset, args.output_file)
@@ -29,7 +29,7 @@ if __name__ == '__main__':
                     num_error+=1
         else:
             response = results
-            if args.constraints_refuse and check_string(response):
+            if args.constraints_refuse and check_refuse(response):
                 continue
             if exact_match(response, answers):
                 num_right+=1

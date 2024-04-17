@@ -55,11 +55,12 @@ def align(dataset_name, question_string, data, ground_truth_datas):
             answers = origin_data["answers"]
         else:
             answers = origin_data["answer"]
-        for answer in answers:
-            alias = answer['aliases']
-            ans = answer['answer']
-            alias.append(ans)
-            answer_list.extend(alias)
+        # for answer in answers:
+        #     alias = answer['aliases']
+        #     ans = answer['answer']
+        #     alias.append(ans)
+        #     answer_list.extend(alias)
+        answer_list = [answers]
 
     elif dataset_name == 'webqsp':
         answers = origin_data["Parses"]

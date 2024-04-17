@@ -36,7 +36,6 @@ if __name__ == '__main__':
 
     datas, question_string = prepare_dataset(args.dataset)
 
-    datas = datas[6:]
     print("Start Running ToG on %s dataset." % args.dataset)
     for data in tqdm(datas):
         question = data[question_string]
